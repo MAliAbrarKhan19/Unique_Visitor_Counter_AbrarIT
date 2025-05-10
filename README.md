@@ -10,8 +10,24 @@ Requires PHP: 7.4
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+/\*
 
-Track unique visitors by IP, record visits per post, display stats in the admin panel, and show total visitors publicly in your footer with a shortcode.
+- Plugin Name: Unique_Visitor_Counter_AbrarIT
+- Plugin URI: https://github.com/MAliAbrarKhan19/Unique_Visitor_Counter_AbrarIT
+- Description: Handle the basics with this plugin.
+- Version: 1.10.3
+- Requires at least: 5.2
+- Requires PHP: 7.2
+- Author: M Ali Abrar Khan, Abrar IT
+- Author URI: https://www.facebook.com/mkabrar1991
+- License: GPL v2 or later
+- License URI: https://www.gnu.org/licenses/gpl-2.0.html
+- Update URI: https://example.com/my-plugin/
+- Text Domain: Unique_Visitor_Counter
+- Domain Path:
+- Requires Plugins:  
+   \*/
+  Track unique visitors by IP, record visits per post, display stats in the admin panel, and show total visitors publicly in your footer with a shortcode.
 
 == Description ==
 

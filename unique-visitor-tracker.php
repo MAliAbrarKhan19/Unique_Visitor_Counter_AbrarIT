@@ -1,12 +1,21 @@
 <?php
-/*
-Plugin Name: Unique Visitor Tracker
-Description: Tracks unique visitors, logs per post, and displays data with chart, footer count, and post readers.
-Version: 1.3
-Author: M Ali Abrar Khan
-Country: Bangladesh
-*/
 
+/*
+ * Plugin Name:       Unique_Visitor_Counter_AbrarIT
+ * Plugin URI:        https://github.com/MAliAbrarKhan19/Unique_Visitor_Counter_AbrarIT
+ * Description:       Tracks unique visitors, logs per post, and displays data with chart, footer count, and post readers.
+ * Version:           1.3
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Author:            M Ali Abrar Khan, Abrar IT
+ * Author URI:        https://www.facebook.com/mkabrar1991
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Update URI:        https://example.com/my-plugin/
+ * Text Domain:       Unique_Visitor_Counter
+ * Domain Path:       
+ * Requires Plugins:  
+ */
 defined('ABSPATH') or die("No script kiddies please!");
 
 // Create table on activation

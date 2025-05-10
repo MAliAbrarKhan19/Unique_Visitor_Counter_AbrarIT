@@ -1,11 +1,12 @@
 # Unique_Visitor_Counter_AbrarIT
 
 === Unique Visitor Tracker ===
-Contributors: M Ali Abrar Khan
-Tags: visitor, tracking, analytics, IP, unique visitors, post views, traffic, stats
+Contributors: abrarwebdev
+Donate link:  
+Tags: visitor, analytics, tracker, post visits, unique ip, graph, footer widget
 Requires at least: 5.0
 Tested up to: 6.5
-Requires PHP: 7.2
+Requires PHP: 7.4
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

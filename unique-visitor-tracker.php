@@ -106,3 +106,66 @@ function uvt_display_footer_count()
 {
     echo do_shortcode('[total_visitors]');
 }
+
+
+// Shortcode to show total visitor count with design
+add_shortcode('total_visitors', 'uvt_total_visitors');
+function uvt_total_visitors()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'unique_visitors';
+    $total = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+
+    ob_start(); ?>
+    <style>
+        .uvt-footer-box {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            display: inline-block;
+            font-family: sans-serif;
+        }
+
+        .uvt-footer-box .uvt-icon {
+            background: #c62828;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .uvt-footer-box .uvt-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+        }
+
+        .uvt-footer-box .uvt-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .uvt-footer-box .uvt-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="uvt-footer-box">
+        <div class="uvt-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="white" d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 1.6c-3.2 0-9.6 1.6-9.6 4.9V22h19.2v-3.5c0-3.3-6.4-4.9-9.6-4.9z" />
+            </svg>
+        </div>
+        <div class="uvt-label">Visitors</div>
+        <div class="uvt-count"><?php echo esc_html($total); ?></div>
+    </div>
+<?php
+    return ob_get_clean();
+}

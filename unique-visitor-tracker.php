@@ -1,9 +1,10 @@
 <?php
 /*
 Plugin Name: Unique Visitor Tracker
-Description: Tracks unique visitors, logs per post, and displays data with chart and footer count.
-Version: 1.0
+Description: Tracks unique visitors, logs per post, and displays data with chart, footer count, and post readers.
+Version: 1.3
 Author: M Ali Abrar Khan
+Country: Bangladesh
 */
 
 defined('ABSPATH') or die("No script kiddies please!");
@@ -118,11 +119,31 @@ function uvt_total_visitors()
     return ob_get_clean();
 }
 
-// Auto display shortcode in footer
-add_action('wp_footer', 'uvt_display_footer_count');
+// Display above footer using get_footer
+add_action('get_footer', 'uvt_display_footer_count', 1);
 function uvt_display_footer_count()
 {
     echo do_shortcode('[total_visitors]');
+}
+
+// Show post readers at top of content
+add_filter('the_content', 'uvt_show_post_readers');
+function uvt_show_post_readers($content)
+{
+    if (is_singular('post') && in_the_loop() && is_main_query()) {
+        global $wpdb;
+        $post_id = get_the_ID();
+        $table = $wpdb->prefix . 'unique_visitors';
+
+        $count = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(DISTINCT ip_address) FROM $table WHERE post_id = %d",
+            $post_id
+        ));
+
+        $readers_info = '<p style="font-weight: bold; color: #c62828;">Post readers: ' . esc_html($count) . '</p>';
+        return $readers_info . $content;
+    }
+    return $content;
 }
 
 // Admin Menu
@@ -134,7 +155,7 @@ function uvt_admin_menu()
     add_submenu_page('uvt_dashboard', 'Daily Visitors', 'Daily Summary', 'manage_options', 'uvt_daily_summary', 'uvt_daily_page');
 }
 
-// Visitor Logs Table
+// Admin Page - Visitor Logs
 function uvt_admin_page()
 {
     global $wpdb;
@@ -221,3 +242,27 @@ function uvt_daily_page()
     </script>
 <?php
 }
+
+// Widget for total visitors
+class UVT_Visitors_Widget extends WP_Widget
+{
+    function __construct()
+    {
+        parent::__construct(
+            'uvt_visitors_widget',
+            __('Total Visitors', 'uvt'),
+            ['description' => __('Displays the total unique visitors.', 'uvt')]
+        );
+    }
+
+    public function widget($args, $instance)
+    {
+        echo $args['before_widget'];
+        echo do_shortcode('[total_visitors]');
+        echo $args['after_widget'];
+    }
+}
+
+add_action('widgets_init', function () {
+    register_widget('UVT_Visitors_Widget');
+});

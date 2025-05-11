@@ -126,14 +126,16 @@ function uvt_total_visitors()
             </svg>
         </div>
         <div class="uvt-label">Visitors</div>
-        <div class="uvt-count"><?php $total=$total+3000 echo esc_html($total); ?></div>
+        <div class="uvt-count"><?php $total = $total + 3000;
+                                echo esc_html($total); ?></div>
     </div>
 <?php
     return ob_get_clean();
 }
 
 add_action('get_footer', 'uvt_display_footer_count', 1);
-function uvt_display_footer_count() {
+function uvt_display_footer_count()
+{
     echo do_shortcode('[total_visitors]');
 }
 

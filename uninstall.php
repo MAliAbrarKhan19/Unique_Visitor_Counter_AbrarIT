@@ -16,5 +16,12 @@ $table = $wpdb->prefix . 'unique_visitors';
 // Delete the plugin's custom database table
 $wpdb->query("DROP TABLE IF EXISTS $table");
 
-// Optionally, delete other plugin options if any were added
 // delete_option('uvt_some_option'); // Uncomment and update if needed
+
+
+// Log result
+if ($result === false) {
+    error_log("Unique_Visitor_Counter_AbrarIT: Failed to drop table $table. Error: " . $wpdb->last_error);
+} else {
+    error_log("Unique_Visitor_Counter_AbrarIT: Successfully dropped table $table.");
+}

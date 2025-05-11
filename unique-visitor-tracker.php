@@ -81,7 +81,7 @@ function uvt_total_visitors()
     ob_start(); ?>
     <style>
         .uvt-footer-box {
-            background: #1e1e1e;
+            background: rgb(241, 213, 213);
             color: #fff;
             padding: 20px;
             text-align: center;
@@ -92,8 +92,8 @@ function uvt_total_visitors()
 
         .uvt-footer-box .uvt-icon {
             background: #c62828;
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             margin: 0 auto 10px;
             border-radius: 50%;
             display: flex;
@@ -108,13 +108,14 @@ function uvt_total_visitors()
         }
 
         .uvt-footer-box .uvt-label {
-            font-size: 18px;
+            font-size: 36px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
         .uvt-footer-box .uvt-count {
-            font-size: 24px;
+            width: 100%;
+            font-size: 26px;
             font-weight: bold;
         }
     </style>
@@ -125,16 +126,16 @@ function uvt_total_visitors()
             </svg>
         </div>
         <div class="uvt-label">Visitors</div>
-        <div class="uvt-count"><?php echo esc_html($total); ?></div>
+        <div class="uvt-count"><?php $total=$total+3000 echo esc_html($total); ?></div>
     </div>
 <?php
     return ob_get_clean();
 }
 
-// add_action('get_footer', 'uvt_display_footer_count', 1);
-// function uvt_display_footer_count() {
-//     echo do_shortcode('[total_visitors]');
-// }
+add_action('get_footer', 'uvt_display_footer_count', 1);
+function uvt_display_footer_count() {
+    echo do_shortcode('[total_visitors]');
+}
 
 add_filter('the_content', 'uvt_show_post_readers');
 function uvt_show_post_readers($content)

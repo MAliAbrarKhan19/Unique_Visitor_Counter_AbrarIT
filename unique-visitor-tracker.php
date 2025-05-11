@@ -1,10 +1,9 @@
 <?php
-
 /*
  * Plugin Name:       Unique_Visitor_Counter_AbrarIT
  * Plugin URI:        https://github.com/MAliAbrarKhan19/Unique_Visitor_Counter_AbrarIT
  * Description:       Tracks unique visitors, logs per post, and displays data with chart, footer count, and post readers.
- * Version:           1.3
+ * Version:           1.4
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            M Ali Abrar Khan, Abrar IT
@@ -13,9 +12,8 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Update URI:        https://example.com/my-plugin/
  * Text Domain:       Unique_Visitor_Counter
- * Domain Path:       
- * Requires Plugins:  
  */
+
 defined('ABSPATH') or die("No script kiddies please!");
 
 // Create table on activation
@@ -45,23 +43,29 @@ function uvt_track_visitor()
     if (is_admin() || is_user_logged_in()) return;
 
     if (is_singular()) {
-        global $wpdb;
+        global $wpdb, $post;
         $ip = $_SERVER['REMOTE_ADDR'];
-        $post_id = get_the_ID();
+        $post_id = isset($post->ID) ? $post->ID : 0;
         $table = $wpdb->prefix . 'unique_visitors';
 
-        $exists = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $table WHERE ip_address = %s AND post_id = %d",
-            $ip,
-            $post_id
-        ));
+        if ($post_id) {
+            $exists = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $table WHERE ip_address = %s AND post_id = %d",
+                $ip,
+                $post_id
+            ));
 
-        if (!$exists) {
-            $wpdb->insert($table, [
-                'ip_address' => $ip,
-                'post_id' => $post_id,
-                'visit_date' => current_time('Y-m-d')
-            ]);
+            if (!$exists) {
+                $inserted = $wpdb->insert($table, [
+                    'ip_address' => $ip,
+                    'post_id' => $post_id,
+                    'visit_date' => current_time('Y-m-d')
+                ]);
+
+                if ($inserted === false) {
+                    error_log('Visitor insert failed: ' . $wpdb->last_error);
+                }
+            }
         }
     }
 }
@@ -114,7 +118,6 @@ function uvt_total_visitors()
             font-weight: bold;
         }
     </style>
-
     <div class="uvt-footer-box">
         <div class="uvt-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -128,14 +131,11 @@ function uvt_total_visitors()
     return ob_get_clean();
 }
 
-// Display above footer using get_footer
-add_action('get_footer', 'uvt_display_footer_count', 1);
-function uvt_display_footer_count()
-{
-    echo do_shortcode('[total_visitors]');
-}
+// add_action('get_footer', 'uvt_display_footer_count', 1);
+// function uvt_display_footer_count() {
+//     echo do_shortcode('[total_visitors]');
+// }
 
-// Show post readers at top of content
 add_filter('the_content', 'uvt_show_post_readers');
 function uvt_show_post_readers($content)
 {
@@ -155,7 +155,6 @@ function uvt_show_post_readers($content)
     return $content;
 }
 
-// Admin Menu
 add_action('admin_menu', 'uvt_admin_menu');
 function uvt_admin_menu()
 {
@@ -164,106 +163,35 @@ function uvt_admin_menu()
     add_submenu_page('uvt_dashboard', 'Daily Visitors', 'Daily Summary', 'manage_options', 'uvt_daily_summary', 'uvt_daily_page');
 }
 
-// Admin Page - Visitor Logs
 function uvt_admin_page()
 {
     global $wpdb;
     $table = $wpdb->prefix . 'unique_visitors';
     $results = $wpdb->get_results("SELECT * FROM $table ORDER BY created_at DESC LIMIT 100");
-?>
-    <div class="wrap">
-        <h2>Unique Visitor Logs</h2>
-        <table class="widefat striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>IP Address</th>
-                    <th>Post ID</th>
-                    <th>Visit Date</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($results as $row): ?>
-                    <tr>
-                        <td><?php echo esc_html($row->id); ?></td>
-                        <td><?php echo esc_html($row->ip_address); ?></td>
-                        <td><?php echo esc_html($row->post_id); ?></td>
-                        <td><?php echo esc_html($row->visit_date); ?></td>
-                        <td><?php echo esc_html($row->created_at); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-<?php
+    echo '<div class="wrap"><h2>Unique Visitor Logs</h2><table class="widefat striped"><thead><tr><th>ID</th><th>IP Address</th><th>Post ID</th><th>Visit Date</th><th>Created At</th></tr></thead><tbody>';
+    foreach ($results as $row) {
+        echo '<tr><td>' . esc_html($row->id) . '</td><td>' . esc_html($row->ip_address) . '</td><td>' . esc_html($row->post_id) . '</td><td>' . esc_html($row->visit_date) . '</td><td>' . esc_html($row->created_at) . '</td></tr>';
+    }
+    echo '</tbody></table></div>';
 }
 
-// Daily Graph Page
 function uvt_daily_page()
 {
     global $wpdb;
     $table = $wpdb->prefix . 'unique_visitors';
-
-    $results = $wpdb->get_results("
-        SELECT visit_date, COUNT(DISTINCT ip_address) as visitors
-        FROM $table
-        GROUP BY visit_date
-        ORDER BY visit_date DESC
-        LIMIT 30
-    ");
-
+    $results = $wpdb->get_results("SELECT visit_date, COUNT(DISTINCT ip_address) as visitors FROM $table GROUP BY visit_date ORDER BY visit_date DESC LIMIT 30");
     $dates = array_column($results, 'visit_date');
     $counts = array_column($results, 'visitors');
-?>
-    <div class="wrap">
-        <h2>Daily Unique Visitors</h2>
-        <canvas id="uvtGraph" width="600" height="300"></canvas>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('uvtGraph').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: <?php echo json_encode($dates); ?>,
-                datasets: [{
-                    label: 'Daily Unique Visitors',
-                    data: <?php echo json_encode($counts); ?>,
-                    backgroundColor: 'rgba(198,40,40,0.2)',
-                    borderColor: 'rgba(198,40,40,1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
-<?php
+    echo '<div class="wrap"><h2>Daily Unique Visitors</h2><canvas id="uvtGraph" width="600" height="300"></canvas></div>';
+    echo '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script>const ctx=document.getElementById("uvtGraph").getContext("2d");new Chart(ctx,{type:"line",data:{labels:' . json_encode($dates) . ',datasets:[{label:"Daily Unique Visitors",data:' . json_encode($counts) . ',backgroundColor:"rgba(198,40,40,0.2)",borderColor:"rgba(198,40,40,1)",borderWidth:2,tension:0.3,fill:true,pointRadius:3}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});</script>';
 }
 
-// Widget for total visitors
 class UVT_Visitors_Widget extends WP_Widget
 {
     function __construct()
     {
-        parent::__construct(
-            'uvt_visitors_widget',
-            __('Total Visitors', 'uvt'),
-            ['description' => __('Displays the total unique visitors.', 'uvt')]
-        );
+        parent::__construct('uvt_visitors_widget', __('Total Visitors', 'uvt'), ['description' => __('Displays the total unique visitors.', 'uvt')]);
     }
-
     public function widget($args, $instance)
     {
         echo $args['before_widget'];
@@ -271,7 +199,6 @@ class UVT_Visitors_Widget extends WP_Widget
         echo $args['after_widget'];
     }
 }
-
 add_action('widgets_init', function () {
     register_widget('UVT_Visitors_Widget');
 });

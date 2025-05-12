@@ -130,7 +130,7 @@ function uvt_total_visitors()
             </svg>
         </div>
         <div class="uvt-label">Visitors</div>
-        <div class="uvt-count"><?php $total = $total + 3000;
+        <div class="uvt-count"><?php //$total = $total + 3000;
                                 echo esc_html($total); ?></div>
     </div>
 <?php
@@ -209,3 +209,5 @@ class UVT_Visitors_Widget extends WP_Widget
 add_action('widgets_init', function () {
     register_widget('UVT_Visitors_Widget');
 });
+
+

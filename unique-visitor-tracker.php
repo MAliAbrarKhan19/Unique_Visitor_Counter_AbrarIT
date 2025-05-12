@@ -81,17 +81,21 @@ function uvt_total_visitors()
     ob_start(); ?>
     <style>
         .uvt-footer-box {
-            background: rgb(241, 213, 213);
-            color: #fff;
+            margin-left: auto;
+            margin-right: auto;
+
+            /* background: #1F2125; */
+            color: #23BE2A;
             padding: 20px;
             text-align: center;
+            border: 4px #BB1919;
             border-radius: 10px;
-            display: inline-block;
+            display: block;
             font-family: sans-serif;
         }
 
         .uvt-footer-box .uvt-icon {
-            background: #c62828;
+            /* background: #BB1919; */
             width: 80px;
             height: 80px;
             margin: 0 auto 10px;
@@ -102,21 +106,21 @@ function uvt_total_visitors()
         }
 
         .uvt-footer-box .uvt-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #fff;
+            width: 60px;
+            height: 60px;
+            fill: #BB1919;
         }
 
         .uvt-footer-box .uvt-label {
-            font-size: 36px;
-            font-weight: bold;
+            font-size: 38px;
+            font-weight: 700;
             margin-bottom: 5px;
         }
 
         .uvt-footer-box .uvt-count {
             width: 100%;
-            font-size: 26px;
-            font-weight: bold;
+            font-size: 46px;
+            font-weight: bolder;
         }
     </style>
     <div class="uvt-footer-box">

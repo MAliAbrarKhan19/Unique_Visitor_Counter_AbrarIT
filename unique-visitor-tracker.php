@@ -95,10 +95,10 @@ function uvt_total_visitors()
         }
 
         .uvt-footer-box .uvt-icon {
-            /* background: #BB1919; */
+            background: #BB1919;
             width: 80px;
             height: 80px;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -113,8 +113,8 @@ function uvt_total_visitors()
 
         .uvt-footer-box .uvt-label {
             font-size: 38px;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-weight: 400;
+            margin-bottom: 2px;
         }
 
         .uvt-footer-box .uvt-count {
@@ -125,8 +125,8 @@ function uvt_total_visitors()
     </style>
     <div class="uvt-footer-box">
         <div class="uvt-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="white" d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 1.6c-3.2 0-9.6 1.6-9.6 4.9V22h19.2v-3.5c0-3.3-6.4-4.9-9.6-4.9z" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                <path fill="white" d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
             </svg>
         </div>
         <div class="uvt-label">Visitors</div>
